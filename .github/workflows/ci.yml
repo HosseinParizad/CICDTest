@@ -27,7 +27,11 @@ jobs:
     - name: Run tests
       id: pytest
       run: |
-        pytest -v --tb=short 2>&1 | tee test_output.txt
+        set +e
+        pytest -v --tb=short > test_output.txt 2>&1
+        echo $? > pytest_exit_code.txt
+        cat test_output.txt
+        exit $(cat pytest_exit_code.txt)
       continue-on-error: true
 
     - name: Post Claude feedback on failure
